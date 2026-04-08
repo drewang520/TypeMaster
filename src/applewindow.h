@@ -1,4 +1,5 @@
-#pragma once
+#ifndef APPLEWINDOW_H
+#define APPLEWINDOW_H       
 
 #include <QWidget>
 #include <QTimer>
@@ -7,6 +8,7 @@
 #include <QVector>
 #include <QPixmap>
 #include <QMediaPlayer>
+#include <QAudioOutput>
 #include <QAudioOutput>
 #include <QRandomGenerator>
 
@@ -48,6 +50,9 @@ private:
     void setupUi();
     void updateHud();
 
+    // —— Background music ───────────────────────────────────────────────────
+    void setupMusic();
+
     // ── Game logic ────────────────────────────────────────────────────────
     void startGame();
     void pauseGame();
@@ -65,6 +70,10 @@ private:
     void drawBasket(QPainter &p);
     void drawHud(QPainter &p);
     void drawOverlay(QPainter &p);
+
+
+    // Background music player
+    QMediaPlayer *m_musicPlayer{nullptr};
 
     // ── HUD widgets (overlay on top of game area) ─────────────────────────
     QLabel      *m_scoreLabel{nullptr};
@@ -105,3 +114,6 @@ private:
 private slots:
     void onTick();
 };
+
+
+#endif // APPLEWINDOW_H

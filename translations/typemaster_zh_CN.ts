@@ -9,12 +9,32 @@
 <context>
     <name>MainWindow</name>
     <message>
+        <source>Kingsoft Typing Master</source>
+        <translation>金山打字通</translation>
+    </message>
+    <message>
+        <source>Tech Geeks Changing the World</source>
+        <translation>技术宅改变世界</translation>
+    </message>
+    <message>
+        <source>2026</source>
+        <translation>2026</translation>
+    </message>
+    <message>
+        <source>─</source>
+        <translation>─</translation>
+    </message>
+    <message>
+        <source>✕</source>
+        <translation>✕</translation>
+    </message>
+    <message>
         <source>TypeMaster — Typing Game</source>
         <translation>打字通 — 打字游戏</translation>
     </message>
     <message>
-        <source>TypeMaster</source>
-        <translation>打字通</translation>
+        <source>Welcome to Kingsoft TypeMaster</source>
+        <translation>欢迎使用金山打字通</translation>
     </message>
     <message>
         <source>Choose your game — improve your typing speed!</source>

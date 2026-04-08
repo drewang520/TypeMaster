@@ -2,26 +2,62 @@
    TypeMaster — Global QSS Stylesheet
    ════════════════════════════════════════════════════════════════ */
 
-/* ── Base widget ──────────────────────────────────────────────── */
-QWidget {
-    background-color: transparent;
-    color: #E8E8F0;
-    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-    font-size: 13px;
+/* ── 自定义顶部标题栏 ────────────────────────────────────── */
+QWidget#topBar {
+    background: qlineargradient(
+    x1:0, y1:0, x2:1, y2:0,
+    stop:0 #A9CCE3, stop:0.5 #7FB3D5, stop:1 #5499C7
+    );
+}
+
+
+QLabel#brandLabel {
+    color: #000000;
+    font-size: 18px;
+    font-weight: Microsoft YaHei;
+    background: transparent;
+}
+
+QLabel#sloganLabel {
+    color: #555;
+    font-size: 12px;
+    background: transparent;
+}
+
+QLabel#yearLabel {
+    color: #665d5d;
+    font-size: 18px;
+    background: transparent;
+    padding-right: 4px;
+}
+
+QLabel#logoLabel {
+    background: transparent;
+}
+
+QPushButton#minBtn, QPushButton#maxBtn, QPushButton#closeBtn {
+    background: transparent;
+    color: #000;
+    border: none;
+    font-size: 14px;
+    font-weight: normal;
+}
+QPushButton#MinBtn:hover, QPushButton#MaxBtn:hover, QPushButton#CloseBtn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+QPushButton#MinBtn:pressed, QPushButton#MaxBtn:pressed, QPushButton#CloseBtn:pressed {
+    background: rgba(255, 255, 255, 0.3);
 }
 
 /* ── Central widget (main background) ───────────────────────────*/
 QWidget#centralWidget {
-    background: qlineargradient(
-        x1:0, y1:0, x2:0, y2:1,
-        stop:0   #12122A,
-        stop:0.5 #1C1C3A,
-        stop:1   #0E0E1E
-    );
+    background: #c9d7ea;
 }
 
 /* ── Header ──────────────────────────────────────────────────── */
-QWidget#headerWidget {
+/* QWidget#headerWidget {
     background: qlineargradient(
         x1:0, y1:0, x2:1, y2:0,
         stop:0   #1A0A3A,
@@ -29,24 +65,22 @@ QWidget#headerWidget {
         stop:1   #1A0A3A
     );
     border-bottom: 2px solid #4A2090;
-}
+} */
 
 QLabel#titleLabel {
-    font-size: 36px;
-    font-weight: bold;
-    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: Microsoft YaHei;
     letter-spacing: 3px;
-    qproperty-text: "TypeMaster"; /* fallback */
 }
 
 QLabel#subtitleLabel {
     font-size: 14px;
-    color: #B0A0D0;
+    /* color: #B0A0D0; */
     letter-spacing: 1px;
 }
 
 /* ── Footer ──────────────────────────────────────────────────── */
-QWidget#footerWidget {
+/* QWidget#footerWidget {
     background-color: #0A0A1A;
     border-top: 1px solid #2A2A4A;
 }
@@ -54,19 +88,19 @@ QWidget#footerWidget {
 QLabel#footerLabel {
     color: #606080;
     font-size: 11px;
-}
+} */
 
 /* ── Scroll area ─────────────────────────────────────────────── */
-QScrollArea#scrollArea,
+/* QScrollArea#scrollArea,
 QScrollArea#scrollArea > QWidget > QWidget {
     background: transparent;
-}
+} */
 
 QWidget#cardsContainer {
-    background: transparent;
+    background: #c9d7ea;
 }
 
-QScrollBar:vertical, QScrollBar:horizontal {
+/* QScrollBar:vertical, QScrollBar:horizontal {
     background: #1C1C3A;
     width: 8px;
     height: 8px;
@@ -77,64 +111,69 @@ QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
     border-radius: 4px;
     min-height: 20px;
 }
-QScrollBar::add-line, QScrollBar::sub-line { height: 0; width: 0; }
+QScrollBar::add-line, QScrollBar::sub-line { height: 0; width: 0; } */
 
 /* ── Game Card ───────────────────────────────────────────────── */
 QFrame#gameCard {
-    background-color: #1E1E38;
-    border: 1px solid #2D2D4A;
-    border-radius: 28px;
+    background: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #a5bcda, stop:1 #edf2f8
+    );
 }
 
-QFrame#gameCard:hover {
+/* QFrame#gameCard:hover {
     background-color: #9B6DFF;
-    /* border: 1px solid #7A5ACA; */
-}
+    /* border: 1px solid #7A5ACA; 
+} */
 
-QLabel#cardPreview {
+/* QLabel#cardPreview {
     border-top-left-radius:  28px;
     border-top-right-radius: 28px;
     background-color: #12122A;
     clip: true;
-}
+} */
 
 QWidget#cardTextArea {
     background: transparent;
 }
 
 QLabel#cardTitle {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    color: #FFFFFF;
-    margin-bottom: 4px;
+    /* color: #FFFFFF;
+    margin-bottom: 4px; */
 }
 
-QLabel#cardDesc {
+/* QLabel#cardDesc {
     font-size: 12px;
     color: #B0B0D0;
     line-height: 1.4;
     margin-bottom: 12px;
-}
+} */
 
 /* ── Play button ─────────────────────────────────────────────── */
 QPushButton#playButton {
-    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-        stop:0 #7C3AED, stop:1 #A855F7);
+    background-color: #a7b8c4;
     color: white;
     border: none;
-    border-radius: 30px;
+    border-radius: 5px;
     font-size: 14px;
     font-weight: bold;
     padding: 8px 16px;
 }
-QPushButton#playButton:hover {
+
+
+/* QPushButton#playButton:hover {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
         stop:0 #8B5CF6, stop:1 #C084FC);
 }
 QPushButton#playButton:pressed {
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
         stop:0 #6D28D9, stop:1 #9333EA);
-}
+} */
+
+
+
 
 /* ── Apple Game HUD ──────────────────────────────────────────── */
 QWidget#appleHud {

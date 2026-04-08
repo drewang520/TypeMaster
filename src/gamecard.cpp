@@ -15,12 +15,12 @@ static void ensureSounds(QObject *parent)
 {
     if (!s_sfxHover) {
         s_sfxHover = new QSoundEffect(parent);
-        s_sfxHover->setSource(QUrl(QStringLiteral("qrc:/sounds/Common/ANIBTN_ENTER")));
+        s_sfxHover->setSource(QUrl(QStringLiteral("qrc:/sounds/Common/ANIBTN_ENTER.wav")));
         s_sfxHover->setVolume(0.35f);
     }
     if (!s_sfxClick) {
         s_sfxClick = new QSoundEffect(parent);
-        s_sfxClick->setSource(QUrl(QStringLiteral("qrc:/sounds/Common/BTN_CLICK")));
+        s_sfxClick->setSource(QUrl(QStringLiteral("qrc:/sounds/Common/BTN_CLICK.wav")));
         s_sfxClick->setVolume(0.6f);
     }
 }
@@ -37,21 +37,23 @@ GameCard::GameCard(const QString &title,
     setupUi(title, description, imagePath);
 
     setObjectName(QStringLiteral("gameCard"));
-    setCursor(Qt::PointingHandCursor);
-    setFrameShape(QFrame::StyledPanel);
 
-    // ── Responsive sizing ─────────────────────────────────────────────────
-    // Minimum so cards never become unreadably small
-    setMinimumSize(200, 300);
-    // Maximum so cards don't stretch absurdly wide on ultra-wide monitors
-    setMaximumSize(420, 540);
-    // Allow the layout to stretch the card to fill available space equally
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    setFrameShape(QFrame::StyledPanel);
+    setFrameShadow(QFrame::Raised);
+
+    // // ── Responsive sizing ──
+    // // Minimum so cards never become unreadably small
+    // setMinimumSize(200, 340);
+    // // Maximum so cards don't stretch absurdly wide on ultra-wide monitors
+    // setMaximumSize(420, 340);
+    // // Allow the layout to stretch the card to fill available space equally
+    setFixedSize(255, 310);
+    // setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     QGraphicsDropShadowEffect *shadow = new QGraphicsDropShadowEffect(this);
-    shadow->setBlurRadius(18);
-    shadow->setOffset(0, 4);
-    shadow->setColor(QColor(0, 0, 0, 80));
+    shadow->setBlurRadius(12);
+    shadow->setOffset(0, 3);
+    shadow->setColor(QColor(0, 0, 0, 60));
     setGraphicsEffect(shadow);
 }
 
@@ -66,23 +68,26 @@ void GameCard::setupUi(const QString &title,
     // ── Preview image (proportional height ~44% of card) ─────────────────
     m_previewLabel = new QLabel(this);
     m_previewLabel->setObjectName(QStringLiteral("cardPreview"));
-    m_previewLabel->setMinimumHeight(120);
+    // m_previewLabel->setMinimumHeight(120);
+    m_previewLabel->setFixedSize(260, 160);
     m_previewLabel->setAlignment(Qt::AlignCenter);
     // Expand horizontally, fixed vertically via ratio below
-    m_previewLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
+    // m_previewLabel->setFixedHeight(160);
+    // m_previewLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    m_previewLabel->setScaledContents(false); // We'll do our own scaling to maintain aspect ratio  
+    
     QPixmap px(imagePath);
     if (!px.isNull()) {
         // Defer actual scaled drawing to resizeEvent; store original
-        m_previewLabel->setProperty("srcPath", imagePath);
+        // m_previewLabel->setProperty("srcPath", imagePath);
         m_previewLabel->setPixmap(
-            px.scaled(QSize(280, 160),
-                      Qt::KeepAspectRatioByExpanding,
+            px.scaled(QSize(250, 180),
+                      Qt::KeepAspectRatio,
                       Qt::SmoothTransformation));
-        m_previewLabel->setScaledContents(false);
+        // m_previewLabel->setScaledContents(false);
     } else {
         // Gradient fallback
-        QPixmap fallback(280, 160);
+        QPixmap fallback(240, 140);
         fallback.fill(Qt::transparent);
         QPainter p(&fallback);
         p.setRenderHint(QPainter::Antialiasing);
@@ -117,18 +122,29 @@ void GameCard::setupUi(const QString &title,
 
     m_titleLabel = new QLabel(title, textArea);
     m_titleLabel->setObjectName(QStringLiteral("cardTitle"));
-    m_titleLabel->setWordWrap(true);
+    m_titleLabel->setAlignment(Qt::AlignTop | Qt::AlignCenter);
 
     m_descLabel = new QLabel(description, textArea);
     m_descLabel->setObjectName(QStringLiteral("cardDesc"));
     m_descLabel->setWordWrap(true);
-    m_descLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    m_descLabel->setAlignment(Qt::AlignTop | Qt::AlignCenter);
 
     m_playButton = new QPushButton(tr("Play"), textArea);
     m_playButton->setObjectName(QStringLiteral("playButton"));
+    // m_playButton->setStyleSheet(QStringLiteral(
+    //     "QPushButton#playButton {"
+    //     "    background-color: #a7b8c4;"
+    //     "    color: white;"
+    //     "    border: none;"
+    //     "    border-radius: 5px;"
+    //     "    font-size: 14px;"
+    //     "    font-weight: bold;"
+    //     "    padding: 8px 16px;"
+    //     "}"
+    // ));
     m_playButton->setCursor(Qt::PointingHandCursor);
     m_playButton->setFixedHeight(40);
-
+    
     textLayout->addWidget(m_titleLabel);
     textLayout->addWidget(m_descLabel, 1);
     textLayout->addWidget(m_playButton);

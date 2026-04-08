@@ -39,7 +39,7 @@ set(TS_FILES
 qt_add_executable(TypeMaster
     ${SOURCES}
     ${HEADERS}
-    resources.qrc
+    resources/resources.qrc
 )
 
 # ── Translations ──────────────────────────────────────────────────────────────

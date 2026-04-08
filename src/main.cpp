@@ -2,6 +2,7 @@
 
 #include <QApplication>
 #include <QTranslator>
+#include <QFontDatabase>
 #include <QLocale>
 #include <QDebug>
 
@@ -14,7 +15,7 @@ int main(int argc, char *argv[])
     app.setApplicationVersion(QStringLiteral("1.0"));      // 版本
     app.setOrganizationName(QStringLiteral("TypeMaster"));  // 组织名称
     
-    // ── Load translation ──────────────────────────────────────────────────
+    // ── Load translation ──
     //用于加载.qm翻译文件(Qt编译后的翻译文件)
     QTranslator translator; 
     // 获取系统的 UI 语言列表，例如 ["zh_CN", "en_US"]，按照用户的系统设置排序
@@ -36,6 +37,15 @@ int main(int argc, char *argv[])
         // 将翻译器安装到应用程序中，使得应用程序能够根据加载的翻译文件显示对应语言的界面文本
     }
     
+    //     // 从资源文件加载（例如将字体文件放到 .qrc 中）
+    // int fontId = QFontDatabase::addApplicationFont(":/fonts/ZhiMangXing-Regular.ttf");
+    // if (fontId != -1) {
+    //     QString family = QFontDatabase::applicationFontFamilies(fontId).at(0);
+    //     // 然后可以在整个应用中使用该字体
+    //     QFont font(family);
+    //     app.setFont(font);
+    // }
+
     MainWindow w;
     w.show();
     return app.exec();

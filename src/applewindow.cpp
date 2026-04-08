@@ -30,7 +30,7 @@ AppleWindow::AppleWindow(QWidget *parent)
     m_appleSmall  = QPixmap(QStringLiteral(":/images/Apple/APPLE_SMALL.png"));
 
     setupUi();
-
+    setupMusic();
     m_gameTimer = new QTimer(this);
     m_gameTimer->setInterval(kTickMs);
     connect(m_gameTimer, &QTimer::timeout, this, &AppleWindow::onTick);
@@ -89,6 +89,35 @@ void AppleWindow::setupUi()
         startGame();
     });
 }
+
+// —— Background music ───────────────────────────────────────────────────
+void AppleWindow::setupMusic()
+{
+    // 1. 创建播放器和播放列表
+    m_musicPlayer = new QMediaPlayer(this);
+
+    // 2. 在 Qt6 中，必须手动创建一个音频输出对象，否则没声音
+    QAudioOutput *audioOutput = new QAudioOutput(this);
+    m_musicPlayer->setAudioOutput(audioOutput);
+
+    // 3. 设置音量 (Qt6 的音量范围是 0.0 到 1.0)
+    // 这里的 0.5 相当于以前的 50
+    audioOutput->setVolume(0.5);
+
+    // 4. 设置媒体源
+    // 注意：如果是资源文件，请确保路径以 qrc:/ 开头
+    m_musicPlayer->setSource(QUrl(QStringLiteral("qrc:/sounds/Apple/APPLE_BG.wav")));
+
+    // 5. 设置循环模式
+    // QMediaPlayer::Infinite 代表无限循环，等同于单曲循环模式
+    m_musicPlayer->setLoops(QMediaPlayer::Infinite);
+
+    // 6. 开始播放
+    m_musicPlayer->play();
+}
+
+
+
 
 // ── Resize handling ───────────────────────────────────────────────────────────
 
