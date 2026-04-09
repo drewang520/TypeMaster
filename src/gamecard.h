@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAMECARD_H
+#define GAMECARD_H
 
 #include <QFrame>
 #include <QLabel>
@@ -41,3 +42,5 @@ private:
     QLabel      *m_descLabel{nullptr};
     QPushButton *m_playButton{nullptr};
 };
+
+#endif // GAMECARD_H   
