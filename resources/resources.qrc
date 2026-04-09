@@ -4,9 +4,18 @@
         <file alias="main.qss">styles/main.qss</file>
     </qresource>
 
+    <!-- Icons  -->
+    <qresource prefix="/icons">
+        <file alias="minimize.png">icons/icons8-subtract-50.png</file>
+        <file alias="maximize.png">icons/icons8-maximize-button-48.png</file>
+        <file alias="close.png">icons/icons8-close-48.png</file>
+        <file alias="restore.png">icons/icons8-restore-down-48.png</file>
+        <file alias="typemaster_logo.png">icons/typemaster_logo.png</file>
+    </qresource>
+
     <!-- ttf -->
     <qresource prefix="/fonts">
-        <file>fonts/ZhiMangXing-Regular.ttf</file>
+        <file alias="zkceyyt.ttf">fonts/zkceyyt.ttf</file>
     </qresource>
 
     <!--  Common images  -->

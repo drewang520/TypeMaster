@@ -12,7 +12,7 @@
 #include <QRadialGradient>
 #include <QtMath>
 
-// ── Constructor ───────────────────────────────────────────────────────────────
+// ── Constructor ──
 
 AppleWindow::AppleWindow(QWidget *parent)
     : QWidget(parent)
@@ -36,7 +36,7 @@ AppleWindow::AppleWindow(QWidget *parent)
     connect(m_gameTimer, &QTimer::timeout, this, &AppleWindow::onTick);
 }
 
-// ── UI setup ──────────────────────────────────────────────────────────────────
+// ── UI setup ──
 
 void AppleWindow::setupUi()
 {
@@ -90,7 +90,7 @@ void AppleWindow::setupUi()
     });
 }
 
-// —— Background music ───────────────────────────────────────────────────
+// —— Background music ──
 void AppleWindow::setupMusic()
 {
     // 1. 创建播放器和播放列表
@@ -119,7 +119,7 @@ void AppleWindow::setupMusic()
 
 
 
-// ── Resize handling ───────────────────────────────────────────────────────────
+// ── Resize handling ──
 
 void AppleWindow::resizeEvent(QResizeEvent *event)
 {
@@ -133,7 +133,7 @@ void AppleWindow::resizeEvent(QResizeEvent *event)
                          height() / 2 + 40);
 }
 
-// ── HUD text update ───────────────────────────────────────────────────────────
+// ── HUD text update ──
 
 void AppleWindow::updateHud()
 {
@@ -153,7 +153,7 @@ void AppleWindow::updateHud()
     m_startBtn->setText(m_state == GameState::GameOver ? tr("Play Again") : tr("Start Game"));
 }
 
-// ── Game control ──────────────────────────────────────────────────────────────
+// ── Game control ──
 
 void AppleWindow::startGame()
 {
@@ -204,7 +204,7 @@ void AppleWindow::resetGame()
     updateHud();
 }
 
-// ── Apple spawning ────────────────────────────────────────────────────────────
+// ── Apple spawning ──
 
 void AppleWindow::spawnApple()
 {
@@ -227,7 +227,7 @@ void AppleWindow::spawnApple()
     m_apples.append(item);
 }
 
-// ── Core game tick ────────────────────────────────────────────────────────────
+// ── Core game tick ──
 
 void AppleWindow::onTick()
 {
@@ -288,7 +288,7 @@ void AppleWindow::updateApples()
     );
 }
 
-// ── Key input ─────────────────────────────────────────────────────────────────
+// ── Key input ──
 
 void AppleWindow::keyPressEvent(QKeyEvent *event)
 {
@@ -334,7 +334,7 @@ bool AppleWindow::tryTypeLetter(QChar ch)
     return true;
 }
 
-// ── Painting ──────────────────────────────────────────────────────────────────
+// ── Painting ──
 
 void AppleWindow::paintEvent(QPaintEvent *)
 {

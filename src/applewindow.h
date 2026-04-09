@@ -53,8 +53,8 @@ private:
     // —— Background music ───────────────────────────────────────────────────
     void setupMusic();
 
-    // ── Game logic ────────────────────────────────────────────────────────
-    void startGame();
+    // ── Game logic ──
+    void startGame(); 
     void pauseGame();
     void resumeGame();
     void endGame();
@@ -68,7 +68,6 @@ private:
     void drawBackground(QPainter &p);
     void drawApples(QPainter &p);
     void drawBasket(QPainter &p);
-    void drawHud(QPainter &p);
     void drawOverlay(QPainter &p);
 
 
