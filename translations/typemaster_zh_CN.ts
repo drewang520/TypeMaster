@@ -9,8 +9,8 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <source>Kingsoft Typing Master</source>
-        <translation>金山打字通</translation>
+        <source>KeyVerse</source>
+        <translation>键盘宇宙</translation>
     </message>
     <message>
         <source>Tech Geeks Changing the World</source>
@@ -33,16 +33,16 @@
         <translation>打字通 — 打字游戏</translation>
     </message>
     <message>
-        <source>Welcome to Kingsoft TypeMaster</source>
-        <translation>欢迎使用金山打字通</translation>
+        <source>Welcome to the KeyVerse</source>
+        <translation>欢迎加入键盘宇宙</translation>
     </message>
     <message>
         <source>Choose your game — improve your typing speed!</source>
         <translation>选择游戏，提升打字速度！</translation>
     </message>
     <message>
-        <source>TypeMaster v1.0  ·  Qt %1</source>
-        <translation>打字通 v1.0  ·  Qt %1</translation>
+        <source>KeyVerse v1.0</source>
+        <translation>键盘宇宙 v1.0</translation>
     </message>
     <message>
         <source>Save the Apple</source>
@@ -52,7 +52,7 @@
         <source>Type the letters shown on falling apples before they hit the ground.
 Catch as many as you can — each miss costs a life!</source>
         <translation>在苹果落地前输入苹果上显示的字母。
-尽可能多地接住苹果——每次失误都会损失一条生命！</translation>
+尽可能多地接住苹果—每次失误都会损失一条生命！</translation>
     </message>
     <message>
         <source>Space War</source>
@@ -71,7 +71,7 @@ Survive as long as possible to beat the high score.</source>
     <message>
         <source>Free typing practice — no lives, no pressure.
 Perfect for warming up your fingers.</source>
-        <translation>自由打字练习——没有生命限制，没有压力。
+        <translation>自由打字练习—没有生命限制，没有压力。
 非常适合热身活动手指。</translation>
     </message>
 </context>
