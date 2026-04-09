@@ -2,25 +2,23 @@
    TypeMaster — Global QSS Stylesheet
    ════════════════════════════════════════════════════════════════ */
 
-/* ── 自定义顶部标题栏 ────────────────────────────────────── */
-QWidget#topBar {
+/* ── 自定义顶部标题栏 ──*/
+QWidget#m_topBar {
     background: qlineargradient(
     x1:0, y1:0, x2:1, y2:0,
-    stop:0 #A9CCE3, stop:0.5 #7FB3D5, stop:1 #5499C7
+    stop:0 #A9CCE3, stop:1 #96c1dd
     );
 }
 
-
 QLabel#brandLabel {
     color: #000000;
-    font-size: 18px;
-    font-weight: Microsoft YaHei;
+    font-size: 24px;
     background: transparent;
 }
 
 QLabel#sloganLabel {
     color: #555;
-    font-size: 12px;
+    font-size: 10px;
     background: transparent;
 }
 
@@ -29,6 +27,7 @@ QLabel#yearLabel {
     font-size: 18px;
     background: transparent;
     padding-right: 4px;
+    font-weight: Times New Roman;
 }
 
 QLabel#logoLabel {
@@ -51,12 +50,12 @@ QPushButton#MinBtn:pressed, QPushButton#MaxBtn:pressed, QPushButton#CloseBtn:pre
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* ── Central widget (main background) ───────────────────────────*/
+/* ── Central widget (main background) ──*/
 QWidget#centralWidget {
     background: #c9d7ea;
 }
 
-/* ── Header ──────────────────────────────────────────────────── */
+/* ── Header ── */
 /* QWidget#headerWidget {
     background: qlineargradient(
         x1:0, y1:0, x2:1, y2:0,
@@ -79,18 +78,20 @@ QLabel#subtitleLabel {
     letter-spacing: 1px;
 }
 
-/* ── Footer ──────────────────────────────────────────────────── */
-/* QWidget#footerWidget {
-    background-color: #0A0A1A;
-    border-top: 1px solid #2A2A4A;
+/* ── Footer ── */
+QWidget#footerWidget {
+    background: qlineargradient(
+    x1:0, y1:0, x2:1, y2:0,
+    stop:0 #A9CCE3, stop:1 #96c1dd
+    );
 }
 
 QLabel#footerLabel {
     color: #606080;
     font-size: 11px;
-} */
+} 
 
-/* ── Scroll area ─────────────────────────────────────────────── */
+/* ── Scroll area ──*/
 /* QScrollArea#scrollArea,
 QScrollArea#scrollArea > QWidget > QWidget {
     background: transparent;
