@@ -34,19 +34,19 @@ QLabel#logoLabel {
     background: transparent;
 }
 
-QPushButton#minBtn, QPushButton#maxBtn, QPushButton#closeBtn {
+QPushButton#minBtn, QPushButton#maxBtn, QPushButton#closeBtn, QPushButton#SetBtn{
     background: transparent;
     color: #000;
     border: none;
     font-size: 14px;
     font-weight: normal;
 }
-QPushButton#MinBtn:hover, QPushButton#MaxBtn:hover, QPushButton#CloseBtn:hover {
+QPushButton#MinBtn:hover, QPushButton#MaxBtn:hover, QPushButton#CloseBtn:hover, QPushButton#SetBtn:hover {
     background: rgba(255, 255, 255, 0.2);
     border-radius: 4px;
 }
 
-QPushButton#MinBtn:pressed, QPushButton#MaxBtn:pressed, QPushButton#CloseBtn:pressed {
+QPushButton#MinBtn:pressed, QPushButton#MaxBtn:pressed, QPushButton#CloseBtn:pressed, QPushButton#SetBtn:pressed {
     background: rgba(255, 255, 255, 0.3);
 }
 
