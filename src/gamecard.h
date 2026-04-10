@@ -24,6 +24,10 @@ public:
 
     QString gameId() const { return m_gameId; }
 
+    void setTitle(const QString &title);
+    void setDescription(const QString &desc);
+    void retranslatePlayBtn();  // 刷新 Play 按钮
+    
 signals:
     void playRequested(const QString &gameId);
 
@@ -35,6 +39,7 @@ private:
     void setupUi(const QString &title,
                  const QString &description,
                  const QString &imagePath);
+
 
     QString      m_gameId;
     QLabel      *m_previewLabel{nullptr};

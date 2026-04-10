@@ -173,3 +173,18 @@ void GameCard::leaveEvent(QEvent *event)
     setProperty("hovered", false);
     style()->polish(this);
 }
+
+void GameCard::setTitle(const QString &title) 
+{
+    if (m_titleLabel) m_titleLabel->setText(title);
+}
+
+void GameCard::setDescription(const QString &desc) 
+{
+    if (m_descLabel) m_descLabel->setText(desc);
+}
+
+void GameCard::retranslatePlayBtn() 
+{
+    if (m_playButton) m_playButton->setText(tr("Play"));
+}
