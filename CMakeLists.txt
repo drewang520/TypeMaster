@@ -18,6 +18,7 @@ set(SOURCES
     src/gamecard.cpp
     src/applewindow.cpp
     src/spacewindow.cpp
+    src/settingsdialog.cpp
     src/practicewindow.cpp
 )
 
@@ -27,6 +28,8 @@ set(HEADERS
     src/applewindow.h
     src/spacewindow.h
     src/practicewindow.h
+    src/settingsdialog.h
+    src/languagemanager.h
 )
 
 # ── Translation files ─────────────────────────────────────────────────────────
