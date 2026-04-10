@@ -1,4 +1,6 @@
 #include "mainwindow.h"
+#include "settingsdialog.h"
+#include "languagemanager.h"
 #include "gamecard.h"
 #include "applewindow.h"
 #include "spacewindow.h"
@@ -13,18 +15,19 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    setupUi();  // 创建所有控件和布局
-    setupStyleSheet(); // 加载并应用样式表
-    connectSignals();   // 连接信号和槽
+    setupUi();  
+    setupStyleSheet(); 
+    connectSignals();   
 
     setMinimumSize(800, 560); // 设置窗口的最小尺寸，确保界面元素不会过度拥挤   
     resize(1100, 720);     // 设置窗口的初始尺寸，提供一个适合大多数屏幕的默认大小
-    // setWindowTitle(tr("TypeMaster — Typing Game")); // 设置窗口标题，使用 tr() 以支持国际化
 }
 
 void MainWindow::setupUi()
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::Window);
+
+    LanguageManager::getInstance();
 
     m_centralWidget = new QWidget(this);
     m_centralWidget->setObjectName(QStringLiteral("centralWidget"));
@@ -125,26 +128,41 @@ void MainWindow::setupUi()
     // ── Footer ──
     QWidget *footerWidget = new QWidget(m_centralWidget);
     footerWidget->setObjectName(QStringLiteral("footerWidget"));
-    footerWidget->setFixedHeight(30);
+    footerWidget->setFixedHeight(35);
 
     QHBoxLayout *footerLayout = new QHBoxLayout(footerWidget);
-    QLabel *footerLabel = new QLabel(
+    // footerLayout->addStretch(1); // 左侧弹性空间，推送内容靠右
+    m_footerLabel = new QLabel(
         tr("KeyVerse v1.0").arg(QT_VERSION_STR), footerWidget);
-    footerLabel->setObjectName(QStringLiteral("footerLabel"));
-    footerLabel->setAlignment(Qt::AlignCenter);
-    footerLayout->addWidget(footerLabel);
+    m_footerLabel->setObjectName(QStringLiteral("footerLabel"));
+    m_footerLabel->setAlignment(Qt::AlignCenter);
 
+    QPushButton *setBtn = new QPushButton(footerWidget);
+    setBtn->setObjectName(QStringLiteral("SetBtn"));
+    setBtn->setIcon(QIcon(QStringLiteral(":/icons/set_logo.png")));
+    setBtn->setIconSize(QSize(14, 14));
+    m_footerLabel->setAlignment(Qt::AlignCenter);
+    setBtn->setFocusPolicy(Qt::NoFocus);
+    connect(setBtn,   &QPushButton::clicked, this, &MainWindow::settingsDialogSolt);
+
+    footerLayout->addWidget(m_footerLabel);
+    footerLayout->addStretch(1); // 添加弹性空间，将设置按钮推到右侧
+    footerLayout->addWidget(setBtn);
+    
     m_mainLayout->addWidget(headerWidget);
     m_mainLayout->addWidget(scrollArea, 1);
     m_mainLayout->addWidget(footerWidget);
-
+    
     setMouseTracking(true); // 启用鼠标跟踪，以便在没有按下鼠标按钮时也能接收 mouseMoveEvent 事件，用于实现悬停调整窗口大小的功能
     m_centralWidget->setMouseTracking(true); // 同样启用 centralWidget 的鼠标跟踪，确保在窗口边缘也能正确检测鼠标位置
-    for (QWidget *child : findChildren<QWidget*>()) {
+    for (QWidget *child : findChildren<QWidget*>()) 
+    {
         child->setMouseTracking(true); // 递归启用子控件的鼠标跟踪，确保在任何区域都能检测到鼠标位置
         child->installEventFilter(this); // 安装事件过滤器，以便在子控件上也能检测鼠标事件，辅助实现窗口调整大小的功能
     }
 }
+
+
 
 void MainWindow::setupTopBar(QWidget *parent)
 {
@@ -180,20 +198,20 @@ void MainWindow::setupTopBar(QWidget *parent)
     QString family = QFontDatabase::applicationFontFamilies(fontId).at(0);
     QFont brandFont(family);
 
-    QLabel *brandLabel = new QLabel(tr("KeyVerse"), centerWiget);
-    QLabel *sloganLabel = new QLabel(tr("Tech Geeks Changing the World"), centerWiget);
-    brandLabel->setObjectName(QStringLiteral("brandLabel"));
-    brandLabel->setFont(brandFont);
-    sloganLabel->setObjectName(QStringLiteral("sloganLabel"));
-    brandLabel->setAlignment(Qt::AlignCenter);
-    sloganLabel->setAlignment(Qt::AlignCenter);
+    m_brandLabel = new QLabel(tr("KeyVerse"), centerWiget);
+    m_sloganLabel = new QLabel(tr("Tech Geeks Changing the World"), centerWiget);
+    m_brandLabel->setObjectName(QStringLiteral("brandLabel"));
+    m_brandLabel->setFont(brandFont);
+    m_sloganLabel->setObjectName(QStringLiteral("sloganLabel"));
+    m_brandLabel->setAlignment(Qt::AlignCenter);
+    m_sloganLabel->setAlignment(Qt::AlignCenter);
     
-    centerLayout->addWidget(brandLabel);
-    centerLayout->addWidget(sloganLabel);
+    centerLayout->addWidget(m_brandLabel);
+    centerLayout->addWidget(m_sloganLabel);
     
-    QLabel *yearLabel = new QLabel(tr("2026"), m_topBar);
-    yearLabel->setObjectName(QStringLiteral("yearLabel"));
-    yearLabel->setAlignment(Qt::AlignCenter); 
+    m_yearLabel = new QLabel(tr("2026"), m_topBar);
+    m_yearLabel->setObjectName(QStringLiteral("yearLabel"));
+    m_yearLabel->setAlignment(Qt::AlignCenter); 
     
     QPushButton *minBtn   = new QPushButton(m_topBar);
     minBtn->setObjectName(QStringLiteral("minBtn"));
@@ -225,7 +243,7 @@ void MainWindow::setupTopBar(QWidget *parent)
     m_topBarLayout->addWidget(logoLabel);
     m_topBarLayout->addSpacing(8); // logo和中间内容之间的间距
     m_topBarLayout->addWidget(centerWiget); 
-    m_topBarLayout->addWidget(yearLabel);
+    m_topBarLayout->addWidget(m_yearLabel);
     m_topBarLayout->addStretch(1); // 左侧伸缩，推挤中心和右侧内容
     m_topBarLayout->addWidget(minBtn);
     m_topBarLayout->addWidget(m_maxBtn);
@@ -235,10 +253,20 @@ void MainWindow::setupTopBar(QWidget *parent)
 void MainWindow::setupStyleSheet()
 {
     QFile qssFile(QStringLiteral(":/styles/main.qss"));
-    if (qssFile.open(QFile::ReadOnly | QFile::Text)) {
+    if (qssFile.open(QFile::ReadOnly | QFile::Text)) 
+    {
         qApp->setStyleSheet(QString::fromUtf8(qssFile.readAll()));
         qssFile.close();
     }
+}
+
+void MainWindow::settingsDialogSolt()
+{
+    SettingsDialog dialog(this);
+    connect(&dialog, &SettingsDialog::languageChanged, this, [this](const QString &locale) {
+            LanguageManager::getInstance().switchLanguage(locale);
+        });
+    dialog.exec();
 }
 
 void MainWindow::connectSignals()
@@ -282,30 +310,6 @@ void MainWindow::onPracticeGameRequested()
     w->show();
 }
 
-// void MainWindow::mousePressEvent(QMouseEvent *event) 
-// {
-//     if (event->button() == Qt::LeftButton
-//         && event->position().y() < m_topBarHeight) {  // 只在 m_topBar 区域内才能拖
-//         m_dragging = true;
-//         m_dragPos  = event->globalPosition().toPoint() - frameGeometry().topLeft();
-//     }
-//     QMainWindow::mousePressEvent(event);
-// }
-
-// void MainWindow::mouseMoveEvent(QMouseEvent *event) 
-// {
-//     if (m_dragging && (event->buttons() & Qt::LeftButton))
-//         move(event->globalPosition().toPoint() - m_dragPos);
-//     QMainWindow::mouseMoveEvent(event);
-// }
-
-// void MainWindow::mouseReleaseEvent(QMouseEvent *event) 
-// {
-//     m_dragging = false;
-//     QMainWindow::mouseReleaseEvent(event);
-// }
-
-
 // ── 通用：把窗口 geometry 动画到目标区域 ──
 void MainWindow::animateTo(const QRect &target, int durationMs)
 {
@@ -320,7 +324,8 @@ void MainWindow::animateTo(const QRect &target, int durationMs)
 // ── 最大化 / 还原切换 ──
 void MainWindow::animateToggleMaximize()
 {
-    if (!m_isMaximized) {
+    if (!m_isMaximized) 
+    {
         // ── 放大 ──
         m_normalGeometry = geometry();  // 记住当前位置，还原时用
 
@@ -329,14 +334,14 @@ void MainWindow::animateToggleMaximize()
                            ->availableGeometry();
 
         animateTo(screen, 220);
-
         m_isMaximized = true;
         m_maxBtn->setIcon(QIcon(QStringLiteral(":/icons/restore.png")));
 
-    } else {
+    } 
+    else 
+    {
         // ── 还原 ──
         animateTo(m_normalGeometry, 200);
-
         m_isMaximized = false;
         m_maxBtn->setIcon(QIcon(QStringLiteral(":/icons/maximize.png")));  // 切换回"最大化"图标
     }
@@ -399,11 +404,14 @@ void MainWindow::mousePressEvent(QMouseEvent *event)
     const QPoint localPos = event->position().toPoint();
     m_resizeDir = hitTest(localPos);
 
-    if (m_resizeDir != None) {
+    if (m_resizeDir != None) 
+    {
         // 边缘：开始缩放
         m_resizeStartGlobal   = event->globalPosition().toPoint();
         m_resizeStartGeometry = geometry();
-    } else if (localPos.y() < 45) {
+    } 
+    else if (localPos.y() < 45) 
+    {
         // topBar 区域：开始拖动窗口
         m_dragging = true;
         m_dragPos  = event->globalPosition().toPoint() - frameGeometry().topLeft();
@@ -417,40 +425,35 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
     const QPoint localPos  = event->position().toPoint();
     const QPoint globalPos = event->globalPosition().toPoint();
 
-    if (!(event->buttons() & Qt::LeftButton)) {
+    if (!(event->buttons() & Qt::LeftButton))
+    {
         // 没按下按钮时只更新光标
         updateCursor(hitTest(localPos));
         return;
     }
 
-    if (m_resizeDir != None) {
-        // ── 缩放逻辑 ───────────────────────────────────────────────
+    if (m_resizeDir != None) 
+    {
+        // ── 缩放逻辑 ──
         const QPoint delta = globalPos - m_resizeStartGlobal;
         QRect r = m_resizeStartGeometry;
 
-        if (m_resizeDir & Left) {
+        if (m_resizeDir & Left) 
             r.setLeft(r.left() + delta.x());
-        }
-        if (m_resizeDir & Right) {
+        if (m_resizeDir & Right) 
             r.setRight(r.right() + delta.x());
-        }
-        if (m_resizeDir & Top) {
+        if (m_resizeDir & Top) 
             r.setTop(r.top() + delta.y());
-        }
-        if (m_resizeDir & Bottom) {
+        if (m_resizeDir & Bottom) 
             r.setBottom(r.bottom() + delta.y());
-        }
 
         // 不小于最小尺寸
-        if (r.width()  >= minimumWidth() &&
-            r.height() >= minimumHeight()) {
+        if (r.width()  >= minimumWidth() && r.height() >= minimumHeight()) 
             setGeometry(r);
-        }
 
-    } else if (m_dragging) {
-        // ── 拖动逻辑（原有）───────────────────────────────────────
+    } else if (m_dragging) 
+        // ── 拖动逻辑（原有）──
         move(globalPos - m_dragPos);
-    }
 
     QMainWindow::mouseMoveEvent(event);
 }
@@ -495,3 +498,54 @@ bool MainWindow::eventFilter(QObject *watched, QEvent *event)
     return QMainWindow::eventFilter(watched, event);
 }
 
+void MainWindow::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange) {
+        retranslateUi();   // 语言改变时刷新所有文字
+    }
+    QMainWindow::changeEvent(event);
+}
+
+void MainWindow::retranslateUi()
+{
+    // ── TopBar ──
+    if (m_brandLabel)  m_brandLabel->setText(tr("KeyVerse"));
+    if (m_sloganLabel) m_sloganLabel->setText(tr("Tech Geeks Changing the World"));
+    if (m_yearLabel)   m_yearLabel->setText(tr("2026"));
+
+    // ── Header ──
+    if (m_titleLabel)    m_titleLabel->setText(tr("Welcome to the KeyVerse"));
+    if (m_subtitleLabel) m_subtitleLabel->setText(tr("Choose your game — improve your typing speed!"));
+
+    // ── Cards ──
+    if (m_appleCard) 
+    {
+        m_appleCard->setTitle(tr("Save the Apple"));
+        m_appleCard->setDescription(
+            tr("Type the letters shown on falling apples before they hit the ground.\n"
+               "Catch as many as you can — each miss costs a life!"));
+    }
+    if (m_spaceCard) 
+    {
+        m_spaceCard->setTitle(tr("Space War"));
+        m_spaceCard->setDescription(
+            tr("Enemy ships are invading! Type the letters on each enemy to blast them.\n"
+               "Survive as long as possible to beat the high score."));
+    }
+    if (m_practiceCard) 
+    {
+        m_practiceCard->setTitle(tr("Practice Mode"));
+        m_practiceCard->setDescription(
+            tr("Free typing practice — no lives, no pressure.\n"
+               "Perfect for warming up your fingers."));
+    }
+
+    // ── Footer ──────────────────────────────────────────────────
+    if (m_footerLabel)
+        m_footerLabel->setText(
+            tr("KeyVerse v1.0").arg(QT_VERSION_STR));
+    
+    if (m_appleCard)    m_appleCard->retranslatePlayBtn();
+    if (m_spaceCard)    m_spaceCard->retranslatePlayBtn();
+    if (m_practiceCard) m_practiceCard->retranslatePlayBtn();
+}

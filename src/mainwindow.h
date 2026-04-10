@@ -24,6 +24,7 @@ public:
 protected:
     void resizeEvent(QResizeEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
+    void changeEvent(QEvent *event) override;
 
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -35,14 +36,23 @@ private:
     void setupTopBar(QWidget *parent);
     void setupStyleSheet();
     void connectSignals();
-
+    void settingsDialogSolt();
+    
     void animateToggleMaximize(); // 切换最大化/恢复时的动画
     void animateTo(const QRect &targetGeometry, int duration = 220); // 220ms 是一个常见的动画时长，既能让动画流畅又不会感觉拖沓
     
+    void retranslateUi(); // 用于语言切换时更新界面文本
+
+
     QWidget      *m_topBar{nullptr};
     static constexpr int      m_topBarHeight{45}; // 顶栏高度，便于在鼠标事件中判断是否在顶栏区域内
+    QLabel *m_brandLabel{nullptr};
+    QLabel *m_sloganLabel{nullptr};
+    QLabel *m_yearLabel{nullptr};
     QPoint m_dragPos; // 追踪鼠标拖动时的偏移位置
     bool   m_dragging{false}; // 追踪是否正在拖动窗口
+
+    QLabel *m_footerLabel{nullptr};
     
     QWidget      *m_centralWidget{nullptr};
     QVBoxLayout  *m_mainLayout{nullptr};
