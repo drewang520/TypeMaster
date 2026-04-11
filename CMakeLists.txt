@@ -8,10 +8,10 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-# ── Find Qt modules ──────────────────────────────────────────────────────────
+# ── Find Qt modules ──
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets Multimedia LinguistTools)
 
-# ── Source files ─────────────────────────────────────────────────────────────
+# ── Source files ──
 set(SOURCES
     src/main.cpp
     src/mainwindow.cpp
@@ -20,6 +20,12 @@ set(SOURCES
     src/spacewindow.cpp
     src/settingsdialog.cpp
     src/practicewindow.cpp
+
+    src/SaveApple/Model/GameData.cpp
+    src/SaveApple/Model/Fruit.cpp
+    src/SaveApple/View/GameView.cpp
+    src/SaveApple/Controller/GameController.cpp
+
 )
 
 set(HEADERS
@@ -30,42 +36,49 @@ set(HEADERS
     src/practicewindow.h
     src/settingsdialog.h
     src/languagemanager.h
+
+    src/IObserver.h
+    src/SaveApple/Model/GameData.h
+    src/SaveApple/Model/Fruit.h
+    src/SaveApple/View/GameView.h
+    src/SaveApple/Controller/GameController.h
+    src/SaveApple/Config/GameConfig.h
 )
 
-# ── Translation files ─────────────────────────────────────────────────────────
+# ── Translation files ──
 set(TS_FILES
     translations/typemaster_zh_CN.ts
     translations/typemaster_en.ts
 )
 
-# ── Executable ────────────────────────────────────────────────────────────────
+# ── Executable ──
 qt_add_executable(TypeMaster
     ${SOURCES}
     ${HEADERS}
     resources/resources.qrc
 )
 
-# ── Translations ──────────────────────────────────────────────────────────────
+# ── Translations ──
 qt_add_translations(TypeMaster
     TS_FILES ${TS_FILES}
     RESOURCE_PREFIX "/i18n"
 )
 
-# ── Link libraries ────────────────────────────────────────────────────────────
+# ── Link libraries ──
 target_link_libraries(TypeMaster PRIVATE
     Qt6::Core
     Qt6::Widgets
     Qt6::Multimedia
 )
 
-# ── Windows: hide console window ──────────────────────────────────────────────
+# ── Windows: hide console window ──
 if(WIN32)
     set_target_properties(TypeMaster PROPERTIES
         WIN32_EXECUTABLE TRUE
     )
 endif()
 
-# ── Install ───────────────────────────────────────────────────────────────────
+# ── Install ──
 install(TARGETS TypeMaster
     BUNDLE  DESTINATION .
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
