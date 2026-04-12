@@ -1,9 +1,9 @@
 #ifndef GAME_VIEW_H
 #define GAME_VIEW_H
 
+#include "IObserver.h"
 #include <QWidget>
 #include <QPixmap>
-#include "../../IObserver.h"
 
 class GameData;
 
@@ -40,10 +40,11 @@ protected:
 
 private:
     // ── 渲染阶段 ──
+    // 注意：HUD 标签（分数/生命值/关卡）是 Qt 控件标签
+    // 由 AppleWindow 管理——它们不会在此处绘制。
     void drawBackground(QPainter& p);
     void drawApples(QPainter& p);
     void drawBasket(QPainter& p);
-    void drawHud(QPainter& p);
     void drawOverlay(QPainter& p);
 
     GameData* m_gameData{nullptr};

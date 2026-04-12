@@ -1,6 +1,7 @@
 #ifndef APPLEWINDOW_H
 #define APPLEWINDOW_H       
 
+#include "IObserver.h"
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
@@ -27,13 +28,15 @@ class GameController;
  * 所有状态数据均位于 GameData 中。
  */
 
-class AppleWindow : public QWidget
+class AppleWindow : public QWidget, public IObserver
 {
     Q_OBJECT
 
 public:
     explicit AppleWindow(QWidget* parent = nullptr);
-    ~AppleWindow() override = default;
+    ~AppleWindow();
+
+    void onUpdate() override;
 
 protected:
     void resizeEvent(QResizeEvent* event) override;
@@ -45,16 +48,17 @@ private:
     void setupMusic();
     void setCatchSound();
     void connectSignals();
-
-    /** 根据当前状态刷新“暂停/开始”按钮的文本和可见性。 */
-    void updateButtons();
+    void repositionStartBtn();  // 根据当前状态正确定位 startBtn
 
     // ── MVC components ──
     GameData*       m_gameData      {nullptr};
     GameView*       m_gameView      {nullptr};
     GameController* m_controller    {nullptr};
 
-    // ── Window chrome ──
+    // ── HUD 栏控件（布局与原始 AppleWindow 相同） 
+    QLabel*      m_scoreLabel {nullptr};
+    QLabel*      m_livesLabel {nullptr};
+    QLabel*      m_levelLabel {nullptr};
     QPushButton* m_backBtn  {nullptr};
     QPushButton* m_pauseBtn {nullptr};
     QPushButton* m_startBtn {nullptr};

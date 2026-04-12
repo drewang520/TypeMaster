@@ -1,15 +1,14 @@
 #include "GameView.h"
-
+#include "languagemanager.h"
 #include <QPainter>
 #include <QPainterPath>
 #include <QKeyEvent>
 #include <QLinearGradient>
 #include <QRadialGradient>
 #include <QFont>
-
-#include "../Model/GameData.h"
-#include "../Model/Fruit.h"
-#include "../Config/GameConfig.h"
+#include "SaveApple/Model/GameData.h"
+#include "SaveApple/Model/Fruit.h"
+#include "SaveApple/Config/GameConfig.h"
 
 // ── Constructor ──
 GameView::GameView(GameData* data, QWidget* parent)
@@ -17,7 +16,6 @@ GameView::GameView(GameData* data, QWidget* parent)
     , m_gameData(data)
 {
     setFocusPolicy(Qt::StrongFocus);
-
     m_bgPixmap    = QPixmap(QStringLiteral(":/images/Apple/APPLE_BACKGROUND.png"));
     m_appleNormal = QPixmap(QStringLiteral(":/images/Apple/APPLE_NORMAL.png"));
     m_appleBad    = QPixmap(QStringLiteral(":/images/Apple/APPLE_BAD.png"));
@@ -47,10 +45,10 @@ void GameView::paintEvent(QPaintEvent*)
     p.setRenderHint(QPainter::Antialiasing);
     p.setRenderHint(QPainter::SmoothPixmapTransform);
 
+    // 错误修复 2：HUD 标签在 AppleWindow 中是 Qt 控件——请勿在此处绘制它们。
     drawBackground(p);
     drawBasket(p);
     drawApples(p);
-    drawHud(p);
 
     if (m_gameData->isPaused() || m_gameData->isGameOver())
         drawOverlay(p);
@@ -195,37 +193,6 @@ void GameView::drawApples(QPainter& p)
     }
 }
 
-// ── HUD (drawn directly on the view surface) ──
-void GameView::drawHud(QPainter& p)
-{
-    // HUD background strip
-    p.setBrush(QColor(0, 0, 0, 120));
-    p.setPen(Qt::NoPen);
-    p.drawRect(0, 0, width(), GameConfig::getInstance().getHudHeight());
-
-    p.setPen(Qt::white);
-    p.setFont(QFont(QStringLiteral("Arial"), 13, QFont::Bold));
-
-    // Score (left)
-    p.drawText(QRect(10, 0, 150, GameConfig::getInstance().getHudHeight()),
-               Qt::AlignVCenter | Qt::AlignLeft,
-               tr("Score: %1").arg(m_gameData->getScore()));
-
-    // Hearts (centre-left)
-    const int maxLives = m_gameData->getMaxLives();
-    QString hearts;
-    for (int i = 0; i < maxLives; ++i)
-        hearts += (i < m_gameData->getLives())
-                  ? QStringLiteral("♥") : QStringLiteral("♡");
-    p.drawText(QRect(width() / 2 - 80, 0, 160, GameConfig::getInstance().getHudHeight()),
-               Qt::AlignCenter, tr("Lives: %1").arg(hearts));
-
-    // Level (right)
-    p.drawText(QRect(width() - 160, 0, 150, GameConfig::getInstance().getHudHeight()),
-               Qt::AlignVCenter | Qt::AlignRight,
-               tr("Level: %1").arg(m_gameData->getLevel()));
-}
-
 // ── Overlay (pause / game-over) ──
 void GameView::drawOverlay(QPainter& p)
 {
@@ -241,31 +208,41 @@ void GameView::drawOverlay(QPainter& p)
     p.setPen(QPen(QColor(0xFF6B6B), 2));
     p.drawRoundedRect(panel, 16, 16);
 
-    p.setPen(Qt::white);
+    // 国际化修复：GameView 是 MVC 重构中引入的一个新类。
+    // 其 tr() 上下文为 “GameView”，而现有的
+    // zh_CN.ts 文件中没有该条目。请使用 QCoreApplication::translate() 并保留原始的
+    // “AppleWindow” 上下文，这样即可复用现有翻译，而无需重新运行 lupdate。
+    auto t = [](const char* src) -> QString {
+        return QCoreApplication::translate("AppleWindow", src);
+    };
 
+    p.setPen(Qt::white);
     if (m_gameData->isPaused()) {
         p.setFont(QFont(QStringLiteral("Arial"), 28, QFont::Bold));
         p.drawText(panel, Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap,
-                   QStringLiteral("\n") + tr("Paused"));
+                   QStringLiteral("\n") + t("Paused"));
         p.setFont(QFont(QStringLiteral("Arial"), 13));
         p.drawText(panel.adjusted(0, 90, 0, 0),
                    Qt::AlignHCenter | Qt::AlignTop,
-                   tr("Press Resume to continue"));
+                   t("Press Resume to continue"));
     } else {
         p.setFont(QFont(QStringLiteral("Arial"), 28, QFont::Bold));
         p.setPen(QColor(0xFF6B6B));
         p.drawText(panel, Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap,
-                   QStringLiteral("\n") + tr("Game Over"));
+                   QStringLiteral("\n") + t("Game Over"));
 
         p.setPen(Qt::white);
         p.setFont(QFont(QStringLiteral("Arial"), 14));
         const QString stats =
-            tr("Score: %1    Level: %2\nCaught: %3    Missed: %4\n")
+            t("Score: %1    Level: %2\nCaught: %3    Missed: %4")
                 .arg(m_gameData->getScore())
                 .arg(m_gameData->getLevel())
                 .arg(m_gameData->getCaughtCount())
                 .arg(m_gameData->getMissedCount());
-        p.drawText(panel.adjusted(0, 100, 0, -60),
+
+        // 布局调整：将统计信息限制在面板的上部，
+        // 底部预留 80 像素的空白区域，用于放置 AppleWindow 定位在覆盖层上的“再次播放”QPushButton。
+        p.drawText(panel.adjusted(10, 95, -10, -90),
                    Qt::AlignCenter | Qt::TextWordWrap, stats);
     }
 }

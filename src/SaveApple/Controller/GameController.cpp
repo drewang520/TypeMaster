@@ -1,12 +1,11 @@
 #include "GameController.h"
+#include "SaveApple/Model/GameData.h"
+#include "SaveApple/Model/Fruit.h"
+#include "SaveApple/View/GameView.h"
+#include "SaveApple/Config/GameConfig.h"
 
 #include <QRandomGenerator>
 #include <algorithm>
-
-#include "../Model/GameData.h"
-#include "../Model/Fruit.h"
-#include "../View/GameView.h"
-#include "../Config/GameConfig.h"
 
 // ── Constructor ──
 
@@ -165,7 +164,11 @@ void GameController::spawnFruit()
     const int margin   = cfg.getAppleRadius() + 10;
     const float x      = static_cast<float>(
         QRandomGenerator::global()->bounded(margin, m_view->width() - margin));
-    const float y      = static_cast<float>(cfg.getHudHeight() + cfg.getAppleRadius());
+    
+    // 错误修复 3：GameView 的坐标系以 y=0 为起点（即其自身顶部边缘）。
+    // 原始的 AppleWindow 使用全窗口坐标系，并将 y 设为 60（即 HudHeight + 10）。
+    // 这里我们只需要从 GameView 顶部开始的偏移量：即 appleRadius。
+    const float y = static_cast<float>(cfg.getAppleRadius());
     const float speed  = cfg.getBaseSpeed()
                        + m_model->getLevel() * cfg.getSpeedPerLevel()
                        + static_cast<float>(

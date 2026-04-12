@@ -131,17 +131,7 @@ void GameCard::setupUi(const QString &title,
 
     m_playButton = new QPushButton(tr("Play"), textArea);
     m_playButton->setObjectName(QStringLiteral("playButton"));
-    // m_playButton->setStyleSheet(QStringLiteral(
-    //     "QPushButton#playButton {"
-    //     "    background-color: #a7b8c4;"
-    //     "    color: white;"
-    //     "    border: none;"
-    //     "    border-radius: 5px;"
-    //     "    font-size: 14px;"
-    //     "    font-weight: bold;"
-    //     "    padding: 8px 16px;"
-    //     "}"
-    // ));
+
     m_playButton->setCursor(Qt::PointingHandCursor);
     m_playButton->setFixedHeight(40);
     
