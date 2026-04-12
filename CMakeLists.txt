@@ -45,6 +45,7 @@ set(HEADERS
     src/SaveApple/Config/GameConfig.h
 )
 
+
 # ── Translation files ──
 set(TS_FILES
     translations/typemaster_zh_CN.ts
@@ -63,6 +64,8 @@ qt_add_translations(TypeMaster
     TS_FILES ${TS_FILES}
     RESOURCE_PREFIX "/i18n"
 )
+
+target_include_directories(TypeMaster PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # ── Link libraries ──
 target_link_libraries(TypeMaster PRIVATE
