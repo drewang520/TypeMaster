@@ -11,11 +11,13 @@ class GameView;
 /**
  * GameController — 游戏逻辑控制器（MVC 中的“C”）。
  *
- * 负责游戏计时器、水果生成、水果移动、按键匹配
- * 以及关卡进度。直接修改 GameData；视图通过观察者通知
- * 自动更新自身。
- *
- * 连接示例（AppleWindow）：
+ * 职责：
+ *   - 驱动游戏计时器（onTick）
+ *   - 生成水果（需满足不重复字母的约束条件）
+ *   - 移动水果；检测水果与地平线偏离70%的情况
+ *   - 将键盘输入与水果进行匹配
+ *   - 检测关卡完成（每关目标）和游戏结束
+ *   - 在LevelComplete延迟后自动进入下一关
  *
  *   connect(m_gameView, &GameView::keyPressed,
  *           m_controller, &GameController::handleKeyPress);
@@ -47,18 +49,21 @@ signals:
 
 private slots:
     void onTick();
+    /** 当 LevelComplete 显示超时后，由 m_levelTimer 调用。 */
+    void onLevelCompleteEnd();
 
 private:
     void spawnFruit();
     void updateFruits();
-    void updateLevel();
+    void checkLevelComplete();
 
     GameData* m_model{nullptr};
     GameView* m_view{nullptr};
     QTimer*   m_gameTimer{nullptr};
+    QTimer* m_levelTimer {nullptr};   // 单次触发：关卡通关后自动跳过
 
     int m_tickCount     {0};
-    int m_spawnInterval {60};
+    // int m_spawnInterval {60};
     int m_nextSpawn     {0};
 };
 

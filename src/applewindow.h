@@ -34,7 +34,7 @@ class AppleWindow : public QWidget, public IObserver
 
 public:
     explicit AppleWindow(QWidget* parent = nullptr);
-    ~AppleWindow();
+    ~AppleWindow() override;
 
     void onUpdate() override;
 
@@ -45,10 +45,17 @@ private:
     // ── Setup helpers ──
     void setupMvc();
     void setupUi();
+    void setupGameButtons();
     void setupMusic();
     void setCatchSound();
     void connectSignals();
     void repositionStartBtn();  // 根据当前状态正确定位 startBtn
+    void repositionGameButtons();
+
+    // 辅助函数：将3帧的PNG图片条生成一个图片按钮
+    QPushButton* makeImageButton(const QString& resourcePath,
+                                 const QString& fallbackText,
+                                 QWidget* parent);
 
     // ── MVC components ──
     GameData*       m_gameData      {nullptr};
@@ -60,9 +67,17 @@ private:
     QLabel*      m_livesLabel {nullptr};
     QLabel*      m_levelLabel {nullptr};
     QPushButton* m_backBtn  {nullptr};
-    QPushButton* m_pauseBtn {nullptr};
+    QPushButton* m_pauseBtn {nullptr};  // // in HUD bar (text button)
+
+    // ── Start/PlayAgain overlay button ──
     QPushButton* m_startBtn {nullptr};
 
+    // ── Four image buttons (bottom-left overlay) ──
+    QPushButton* m_imgStartBtn    {nullptr};
+    QPushButton* m_imgPauseBtn    {nullptr};
+    QPushButton* m_imgSettingsBtn {nullptr};
+    QPushButton* m_imgExitBtn     {nullptr};    
+    
     // ── Audio ──
     QMediaPlayer* m_musicPlayer {nullptr};
     QSoundEffect* m_catchSound  {nullptr};

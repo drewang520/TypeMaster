@@ -39,8 +39,6 @@
         <file alias="PUBLIC_START.png">images/Common/PUBLIC_START.png</file>
         <file alias="SLIDER_BG.png">images/Common/SLIDER_BG.png</file>
         <file alias="SLIDER_SLIDER.png">images/Common/SLIDER_SLIDER.png</file>
-        <file alias="logo_48.png">images/Common/typemaster_logo_48.png</file>
-        <file alias="logo.png">images/Common/typemaster_logo.png</file>
         <file alias="YES.png">images/Common/YES.png</file>
         <file alias="airplane.png">images/Space/airplane.png</file>
     </qresource>

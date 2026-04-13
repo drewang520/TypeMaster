@@ -5,6 +5,7 @@
 #include "SaveApple/Config/GameConfig.h"
 
 #include <QRandomGenerator>
+#include <QSet>
 #include <algorithm>
 
 // ── Constructor ──
@@ -15,21 +16,24 @@ GameController::GameController(GameData* model, GameView* view, QObject* parent)
     , m_view(view)
 {
     const GameConfig& cfg = GameConfig::getInstance();
-    m_spawnInterval = cfg.getInitialSpawnInterval();
 
     m_gameTimer = new QTimer(this);
     m_gameTimer->setInterval(cfg.getTickMs());
     connect(m_gameTimer, &QTimer::timeout, this, &GameController::onTick);
+
+    // 用于“关卡完成”自动跳过延迟的一次性定时器
+    m_levelTimer = new QTimer(this);
+    m_levelTimer->setSingleShot(true);
+    connect(m_levelTimer, &QTimer::timeout, this, &GameController::onLevelCompleteEnd);
 }
 
 // ── Public control slots ──
 
 void GameController::startGame()
 {
-    m_model->setState(GameState::Running);
     m_tickCount     = 0;
     m_nextSpawn     = 0;
-    m_spawnInterval = GameConfig::getInstance().getInitialSpawnInterval();
+    m_model->setState(GameState::Running);
     m_gameTimer->start();
     emit gameStateChanged();
     m_view->setFocus();
@@ -39,6 +43,7 @@ void GameController::pauseGame()
 {
     m_model->setState(GameState::Paused);
     m_gameTimer->stop();
+    m_levelTimer->stop();
     emit gameStateChanged();
 }
 
@@ -53,8 +58,8 @@ void GameController::resumeGame()
 void GameController::restartGame()
 {
     m_gameTimer->stop();
+    m_levelTimer->stop();
     m_model->reset();
-    m_spawnInterval = GameConfig::getInstance().getInitialSpawnInterval();
     m_tickCount     = 0;
     m_nextSpawn     = 0;
     emit gameStateChanged();
@@ -85,18 +90,23 @@ void GameController::handleKeyPress(QChar ch)
         return;
 
     // Mark as caught
+    const QChar letter = fruits[bestIdx].getLetter();
     fruits[bestIdx].catchFruit();
+    m_model->removeActiveLetter(letter);
 
-    // Update model
-    m_model->addScore(GameConfig::getInstance().getBaseScorePerCatch()
-                      * m_model->getLevel());
+    const GameConfig& cfg = GameConfig::getInstance();
+    m_model->addScore(cfg.getBaseScorePerCatch() * m_model->getLevel());
     m_model->incrementCaught();
-
-    QVector<QChar>& basket = m_model->getBasketApples();
-    if (basket.size() < GameConfig::getInstance().getMaxBasketDisplay())
-        basket.append(ch);
-
+    m_model->incrementLevelCaught();
+ 
+    if (m_model->getBasketApples().size() < cfg.getMaxBasketDisplay())
+        m_model->getBasketApples().append(letter);
+ 
     emit fruitCaught();
+ 
+    // Check if this catch triggered level completion
+    checkLevelComplete();
+ 
     m_model->notifyObservers();
 }
 
@@ -110,19 +120,37 @@ void GameController::onTick()
     // Spawn
     if (m_tickCount >= m_nextSpawn) {
         spawnFruit();
-        m_nextSpawn = m_tickCount + m_spawnInterval;
+        m_nextSpawn = m_tickCount + GameConfig::getInstance().getSpawnInterval();
     }
 
-    updateLevel();
     m_model->notifyObservers();
 }
 
+// ── Level-complete auto-advance ──
+void GameController::onLevelCompleteEnd()
+{
+    // Clear remaining fruits from the completed level
+    for (Fruit& f : m_model->getFruits())
+        if (f.isActive())
+            m_model->removeActiveLetter(f.getLetter());
+    m_model->getFruits().clear();
+ 
+    // Advance level
+    m_model->setLevel(m_model->getLevel() + 1);
+    m_model->resetLevelCaught();
+ 
+    m_model->setState(GameState::Running);
+    m_gameTimer->start();
+    emit gameStateChanged();
+    m_view->setFocus();
+}
+
+// ── Internal helpers ──
 void GameController::updateFruits()
 {
-    const GameConfig& cfg  = GameConfig::getInstance();
-    const int groundY = m_view->height()
-                        - cfg.getBasketOffsetY()
-                        - cfg.getAppleRadius();
+    // Requirement: apple is missed when it reaches 70% of the GameView height
+    const int groundY = static_cast<int>(m_view->height()
+                                         * GameConfig::getInstance().getGroundRatio());
 
     QVector<Fruit>& fruits = m_model->getFruits();
 
@@ -131,13 +159,15 @@ void GameController::updateFruits()
             f.update();
 
             if (static_cast<int>(f.getY()) >= groundY) {
+                m_model->removeActiveLetter(f.getLetter());
                 f.breakFruit();
                 m_model->incrementMissed();
                 m_model->loseLife(); // notifyObservers() inside loseLife()
 
                 if (m_model->getLives() <= 0) {
-                    m_model->setState(GameState::GameOver);
                     m_gameTimer->stop();
+                    m_levelTimer->stop();
+                    m_model->setState(GameState::GameOver);
                     emit gameStateChanged();
                     return;
                 }
@@ -157,36 +187,57 @@ void GameController::updateFruits()
 void GameController::spawnFruit()
 {
     const GameConfig& cfg = GameConfig::getInstance();
+
+    // Don't spawn while in level-complete animation
+    if (!m_model->isRunning())
+        return;
+
+    // Respect max-on-screen setting
     if (m_model->getFruits().size() >= cfg.getMaxFruitsOnScreen())
         return;
 
-    const QChar letter = QChar('A' + QRandomGenerator::global()->bounded(26));
-    const int margin   = cfg.getAppleRadius() + 10;
-    const float x      = static_cast<float>(
-        QRandomGenerator::global()->bounded(margin, m_view->width() - margin));
+    // ── No-duplicate letter constraint ──
+    const QSet<QChar>& active = m_model->getActiveLetters();
+    if (active.size() >= 26)
+        return; // every letter is already on screen
+    QChar letter;
+    int attempts = 0;
+    do {
+        letter = QChar('A' + QRandomGenerator::global()->bounded(26));
+        ++attempts;
+    } while (active.contains(letter) && attempts < 50);
+ 
+    if (active.contains(letter))
+        return; // failed to find a free letter
     
-    // 错误修复 3：GameView 的坐标系以 y=0 为起点（即其自身顶部边缘）。
-    // 原始的 AppleWindow 使用全窗口坐标系，并将 y 设为 60（即 HudHeight + 10）。
-    // 这里我们只需要从 GameView 顶部开始的偏移量：即 appleRadius。
+    // ── Position and speed ──
+    const int margin = cfg.getAppleRadius() + 10;
+    const float x = static_cast<float>(
+        QRandomGenerator::global()->bounded(margin, m_view->width() - margin));
     const float y = static_cast<float>(cfg.getAppleRadius());
-    const float speed  = cfg.getBaseSpeed()
-                       + m_model->getLevel() * cfg.getSpeedPerLevel()
-                       + static_cast<float>(
-                           QRandomGenerator::global()->generateDouble()
-                           * cfg.getSpeedRandRange());
-
+ 
+    const float speed = cfg.computeBaseSpeed(m_model->getLevel())
+                      + static_cast<float>(
+                            QRandomGenerator::global()->generateDouble()
+                            * cfg.getSpeedRandRange());
+ 
+    m_model->addActiveLetter(letter);
     m_model->getFruits().append(Fruit(letter, x, y, speed));
 }
 
-void GameController::updateLevel()
+void GameController::checkLevelComplete()
 {
-    const GameConfig& cfg     = GameConfig::getInstance();
-    const int         newLvl  = 1 + m_model->getCaughtCount() / cfg.getCatchesPerLevel();
-
-    if (newLvl != m_model->getLevel()) {
-        m_model->setLevel(newLvl); // notifies observers
-        m_spawnInterval = qMax(cfg.getMinSpawnInterval(),
-                               cfg.getInitialSpawnInterval()
-                               - (newLvl - 1) * cfg.getSpawnDecrement());
-    }
+    const GameConfig& cfg = GameConfig::getInstance();
+ 
+    if (m_model->getLevelCaught() < cfg.getLevelTarget())
+        return;
+ 
+    // Level target reached!
+    m_gameTimer->stop();
+    m_model->setState(GameState::LevelComplete);
+    emit gameStateChanged();
+ 
+    // Auto-advance after the overlay display delay
+    const int delayMs = cfg.getLevelCompleteDelay() * cfg.getTickMs();
+    m_levelTimer->start(delayMs);
 }

@@ -112,7 +112,7 @@ Perfect for warming up your fingers.</source>
     </message>
     <message>
         <source>Level: 1</source>
-        <translation>关卡：1</translation>
+        <translation>关卡: 1</translation>
     </message>
     <message>
         <source>Level: %1</source>
@@ -143,9 +143,63 @@ Perfect for warming up your fingers.</source>
         <translation>点击"继续"按钮恢复游戏</translation>
     </message>
     <message>
+        <source>Game Settings</source>
+        <translation>游戏设置</translation>
+    </message>      
+    <message>
+        <source>Level Complete!</source>
+        <translation>关卡通关！</translation>
+    </message>      
+    <message>
         <source>Game Over</source>
         <translation>游戏结束</translation>
+    </message>     
+    <message>
+        <source>Level %1  →  Level %2</source>
+        <translation>关卡 %1  →  关卡 %2</translation>
     </message>
+    <message>
+        <source>Get ready...</source>
+        <translation>准备好了吗……</translation>
+    </message>
+    <message>
+        <source>Level: %1  [%2/%3]</source>
+        <translation>关卡目标: %1  [%2/%3]</translation>
+    </message>    
+    <message>
+        <source>Speed Level</source>
+        <translation>速度等级</translation>
+    </message>
+    <message>
+        <source>Max Apples</source>
+        <translation>最大苹果数</translation>
+    </message>
+    <message>
+        <source>Level Target</source>
+        <translation>关卡目标</translation>
+    </message>    
+
+    <message>
+        <source>Cancel</source>
+        <translation>取消</translation>
+    </message> 
+    <message>
+        <source>Confirm</source>
+        <translation>确认</translation>
+    </message> 
+    <message>
+        <source>ON  ♪</source>
+        <translation>开 ♪</translation>
+    </message> 
+    <message>
+        <source>OFF  ♪</source>
+        <translation>关 ♪</translation>
+    </message> 
+    <message>
+        <source>Sound</source>
+        <translation>声音</translation>
+    </message> 
+
     <message>
         <source>Score: %1    Level: %2
 Caught: %3    Missed: %4</source>

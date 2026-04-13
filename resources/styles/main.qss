@@ -114,7 +114,7 @@ QScrollBar::handle:vertical, QScrollBar::handle:horizontal {
 }
 QScrollBar::add-line, QScrollBar::sub-line { height: 0; width: 0; } */
 
-/* ── Game Card ───────────────────────────────────────────────── */
+/* ── Game Card ── */
 QFrame#gameCard {
     background: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -152,7 +152,7 @@ QLabel#cardTitle {
     margin-bottom: 12px;
 } */
 
-/* ── Play button ─────────────────────────────────────────────── */
+/* ── Play button ── */
 QPushButton#playButton {
     background-color: #a7b8c4;
     color: white;
@@ -176,7 +176,7 @@ QPushButton#playButton:pressed {
 
 
 
-/* ── Apple Game HUD ──────────────────────────────────────────── */
+/* ── Apple Game HUD ── */
 QWidget#appleHud {
     background-color: rgba(10, 10, 30, 200);
     border-bottom: 1px solid #3A3A5A;
@@ -196,15 +196,17 @@ QPushButton#hudButton {
     font-size: 13px;
     padding: 4px 10px;
 }
+
 QPushButton#hudButton:hover {
     background-color: rgba(255,255,255,50);
     border-color: rgba(255,255,255,120);
 }
+
 QPushButton#hudButton:pressed {
     background-color: rgba(255,255,255,20);
 }
 
-/* ── Big centred button (Start Game / Play Again) ────────────── */
+/* ── Big centred button (Start Game / Play Again) ── */
 QPushButton#bigButton {
     background: qlineargradient(x1:0,y1:0,x2:0,y2:1,
         stop:0 #22C55E, stop:1 #15803D);
@@ -223,7 +225,84 @@ QPushButton#bigButton:pressed {
         stop:0 #16A34A, stop:1 #166534);
 }
 
-/* ── Placeholder windows (Space, Practice) ───────────────────── */
+/* Apply game-wide style */
+AppleSettingsDialog {
+    background: #1A1A2E;
+    border: 2px solid #FF6B6B;
+    border-radius: 14px;
+}
+
+QLabel#settingsTitle {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+QLabel#settingsKey {
+    color: #CCCCCC;
+    font-size: 13px;
+}
+
+QLabel#settingsVal {
+    color: #4CAF50;
+    font-size: 13px;
+    font-weight: bold;
+    min-width: 30px;
+}
+
+QSlider::groove:horizontal {
+    height: 6px;
+    background: #333355;
+    border-radius: 3px;
+}
+
+QSlider::sub-page:horizontal {
+    background: #4CAF50;
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal {
+    width: 18px;
+    height: 18px;
+    margin: -6px 0;
+    background: white;
+    border-radius: 9px;
+    border: 2px solid #4CAF50;
+}
+
+QPushButton#confirmBtn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 28px;
+}
+
+QPushButton#confirmBtn:hover { background: #45a049; }
+
+QPushButton#cancelBtn {
+    background: #555577;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    padding: 8px 28px;
+}
+
+QPushButton#cancelBtn:hover { background: #6666aa; }
+
+QPushButton#soundBtn {
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 5px 18px;
+}
+
+
+/* ── Placeholder windows (Space, Practice) ── */
 QWidget#practiceWindow {
     background: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -242,7 +321,7 @@ QLabel#placeholderMsg {
     color: #9090B8;
 }
 
-/* ── Practice prompt letter ──────────────────────────────────── */
+/* ── Practice prompt letter ── */
 QLabel#practicePrompt {
     color: #7C3AED;
     font-size: 96px;
@@ -258,7 +337,7 @@ QLabel#practiceFeedback {
     font-weight: bold;
 }
 
-/* ── QMessageBox ─────────────────────────────────────────────── */
+/* ── QMessageBox ── */
 QMessageBox {
     background-color: #1E1E38;
     color: #E8E8F0;

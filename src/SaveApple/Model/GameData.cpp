@@ -33,6 +33,19 @@ void GameData::setLevel(int level)
     notifyObservers();
 }
 
+// ── 每层捕获计数器 ──
+void GameData::incrementLevelCaught()
+{
+    ++m_levelCaught;
+    // 此处不调用 notify — 控制器会在完整更新后调用 notifyObservers
+}
+ 
+void GameData::resetLevelCaught()
+{
+    m_levelCaught = 0;
+}
+
+
 // ── Statistics ──
 void GameData::incrementCaught()
 {
@@ -60,9 +73,11 @@ void GameData::reset()
     m_level       = 1;
     m_caughtCount = 0;
     m_missedCount = 0;
+    m_levelCaught  = 0;
     m_state       = GameState::Ready;
     m_fruits.clear();
     m_basketApples.clear();
+    m_activeLetters.clear();
     notifyObservers();
 }
 

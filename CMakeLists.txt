@@ -25,7 +25,7 @@ set(SOURCES
     src/SaveApple/Model/Fruit.cpp
     src/SaveApple/View/GameView.cpp
     src/SaveApple/Controller/GameController.cpp
-
+    src/SaveApple/View/Settingsdialog.cpp
 )
 
 set(HEADERS
@@ -43,8 +43,8 @@ set(HEADERS
     src/SaveApple/View/GameView.h
     src/SaveApple/Controller/GameController.h
     src/SaveApple/Config/GameConfig.h
+    src/SaveApple/View/Settingsdialog.h
 )
-
 
 # ── Translation files ──
 set(TS_FILES
